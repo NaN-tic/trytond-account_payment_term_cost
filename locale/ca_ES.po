@@ -1,0 +1,39 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:account.invoice.payment_term,compute_over_total_amount:"
+msgid "Compute over total amount"
+msgstr "Calcula sobre el total"
+
+msgctxt "field:account.invoice.payment_term,cost_percent:"
+msgid "Cost (%)"
+msgstr "Cost (%)"
+
+msgctxt "field:account.invoice.payment_term,cost_product:"
+msgid "Cost product"
+msgstr "Producte de cost"
+
+msgctxt "field:account.invoice.payment_term,has_cost:"
+msgid "Has Costs?"
+msgstr "Té cost?"
+
+msgctxt "help:account.invoice.payment_term,compute_over_total_amount:"
+msgid ""
+"Check it if you want to compute cost over total amount with tax, otherwise "
+"will compute it over total amount without tax"
+msgstr ""
+"Marqueu aquesta casella si voleu calcular el cost sobre l'import total amb "
+"impostos, en cas contrari el calcularà sobre el total sense impostos."
+
+msgctxt "help:account.invoice.payment_term,has_cost:"
+msgid ""
+"Check it if it has to create a line with the operation cost in the customer "
+"invoices."
+msgstr ""
+"Marqueu-ho per crear una línea amb el cost/descompte per aquest tipus de "
+"pagament."
+
+msgctxt "view:account.invoice.payment_term:"
+msgid "Costs"
+msgstr "Costos"
