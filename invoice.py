@@ -18,6 +18,7 @@ class Invoice:
                     ('invoice', '=', self),
                     ('product', '=', self.payment_term.cost_product),
                     ])
+
             if not lines:
                 line = self._get_payment_term_cost_line()
                 line.save()
@@ -41,10 +42,7 @@ class Invoice:
         line.unit = None
         line.description = None
         line.product = self.payment_term.cost_product
-        for key, value in line.on_change_product().iteritems():
-            if 'rec_name' in key:
-                continue
-            setattr(line, key, value)
+        line.on_change_product()
         if self.payment_term.compute_over_total_amount:
             line.unit_price = (self.total_amount *
                 self.payment_term.cost_percent)
