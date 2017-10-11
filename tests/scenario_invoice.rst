@@ -152,8 +152,6 @@ Create invoice with cost::
     >>> line.product = product
     >>> line.quantity = 5
     >>> line.unit_price = Decimal('40')
-    >>> import pdb
-    >>> pdb.set_trace()
     >>> invoice.click('post')
     >>> invoice.state
     u'posted'
