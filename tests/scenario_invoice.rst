@@ -8,26 +8,18 @@ Imports::
     >>> from decimal import Decimal
     >>> from operator import attrgetter
     >>> from proteus import config, Model, Wizard
+    >>> from trytond.tests.tools import activate_modules
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
-    ...     create_chart, get_accounts, create_tax, set_tax_code
+    ...     create_chart, get_accounts, create_tax, create_tax_code
     >>> from trytond.modules.account_invoice.tests.tools import \
     ...     set_fiscalyear_invoice_sequences, create_payment_term
     >>> today = datetime.date.today()
 
-Create database::
+Activate account_payment_term_cost::
 
-    >>> config = config.set_trytond()
-    >>> config.pool.test = True
-
-Install account_payment_term_cost::
-
-    >>> Module = Model.get('ir.module')
-    >>> account_invoice_module, = Module.find(
-    ...     [('name', '=', 'account_payment_term_cost')])
-    >>> Module.install([account_invoice_module.id], config.context)
-    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
+    >>> config = activate_modules('account_payment_term_cost')
 
 Create company::
 
@@ -56,12 +48,17 @@ Create chart of accounts::
 Create tax::
 
     >>> Tax = Model.get('account.tax')
-    >>> tax = set_tax_code(create_tax(Decimal('.10')))
+    >>> TaxCode = Model.get('account.tax.code')
+    >>> tax = create_tax(Decimal('.10'))
     >>> tax.save()
-    >>> invoice_base_code = tax.invoice_base_code
-    >>> invoice_tax_code = tax.invoice_tax_code
-    >>> credit_note_base_code = tax.credit_note_base_code
-    >>> credit_note_tax_code = tax.credit_note_tax_code
+    >>> invoice_base_code = create_tax_code(tax, 'base', 'invoice')
+    >>> invoice_base_code.save()
+    >>> invoice_tax_code = create_tax_code(tax, 'tax', 'invoice')
+    >>> invoice_tax_code.save()
+    >>> credit_note_base_code = create_tax_code(tax, 'base', 'credit')
+    >>> credit_note_base_code.save()
+    >>> credit_note_tax_code = create_tax_code(tax, 'tax', 'credit')
+    >>> credit_note_tax_code.save()
 
 Create party::
 
@@ -86,8 +83,9 @@ Create product::
     >>> template.account_revenue = revenue
     >>> template.customer_taxes.append(tax)
     >>> template.save()
-    >>> product.template = template
+    >>> product, = template.products
     >>> product.save()
+
     >>> cost_product = Product()
     >>> cost_template = ProductTemplate()
     >>> cost_template.name = 'cost product'
@@ -97,10 +95,9 @@ Create product::
     >>> cost_template.cost_price = Decimal('25')
     >>> cost_template.account_expense = expense
     >>> cost_template.account_revenue = revenue
-    >>> tax,  = Tax.find([], limit=1)
-    >>> cost_template.customer_taxes.append(tax)
+    >>> cost_template.customer_taxes.append(Tax(tax.id))
     >>> cost_template.save()
-    >>> cost_product.template = cost_template
+    >>> cost_product, = cost_template.products
     >>> cost_product.save()
 
 Create payment term::
@@ -155,8 +152,8 @@ Create invoice with cost::
     >>> invoice.click('post')
     >>> invoice.state
     u'posted'
-    >>> len(invoice.lines) == 2
-    True
+    >>> len(invoice.lines)
+    2
     >>> line1, line2 = invoice.lines
     >>> line1.amount
     Decimal('200.00')
