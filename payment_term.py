@@ -7,9 +7,8 @@ from trytond.pool import PoolMeta
 __all__ = ['PaymentTerm']
 
 
-class PaymentTerm:
+class PaymentTerm(metaclass=PoolMeta):
     __name__ = 'account.invoice.payment_term'
-    __metaclass__ = PoolMeta
 
     has_cost = fields.Boolean('Has Costs?', help="Check it if it has to "
         "create a line with the operation cost in the customer invoices.")

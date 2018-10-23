@@ -155,7 +155,7 @@ Create invoice with cost::
     >>> line.unit_price = Decimal('40')
     >>> invoice.click('post')
     >>> invoice.state
-    u'posted'
+    'posted'
     >>> len(invoice.lines)
     2
     >>> line1, line2 = invoice.lines

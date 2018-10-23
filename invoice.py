@@ -5,10 +5,9 @@ from trytond.pool import Pool, PoolMeta
 __all__ = ['Invoice']
 
 
-class Invoice:
+class Invoice(metaclass=PoolMeta):
     'Invoice'
     __name__ = 'account.invoice'
-    __metaclass__ = PoolMeta
 
     def get_move(self):
         pool = Pool()
@@ -36,7 +35,7 @@ class Invoice:
         line = Line()
         line.invoice = self
         for key, value in Line.default_get(Line._fields.keys(),
-                with_rec_name=False).iteritems():
+                with_rec_name=False).items():
             setattr(line, key, value)
         line.quantity = 1
         line.unit = None
