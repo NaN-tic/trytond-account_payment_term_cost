@@ -66,6 +66,16 @@ Create party::
     >>> party = Party(name='Party')
     >>> party.save()
 
+Create account category::
+
+    >>> ProductCategory = Model.get('product.category')
+    >>> account_category = ProductCategory(name="Account Category")
+    >>> account_category.accounting = True
+    >>> account_category.account_expense = expense
+    >>> account_category.account_revenue = revenue
+    >>> account_category.customer_taxes.append(tax)
+    >>> account_category.save()
+
 Create product::
 
     >>> ProductUom = Model.get('product.uom')
@@ -78,10 +88,7 @@ Create product::
     >>> template.default_uom = unit
     >>> template.type = 'service'
     >>> template.list_price = Decimal('40')
-    >>> template.cost_price = Decimal('25')
-    >>> template.account_expense = expense
-    >>> template.account_revenue = revenue
-    >>> template.customer_taxes.append(tax)
+    >>> template.account_category = account_category
     >>> template.save()
     >>> product, = template.products
     >>> product.save()
@@ -92,10 +99,7 @@ Create product::
     >>> cost_template.default_uom = unit
     >>> cost_template.type = 'service'
     >>> cost_template.list_price = Decimal('40')
-    >>> cost_template.cost_price = Decimal('25')
-    >>> cost_template.account_expense = expense
-    >>> cost_template.account_revenue = revenue
-    >>> cost_template.customer_taxes.append(Tax(tax.id))
+    >>> cost_template.account_category = account_category
     >>> cost_template.save()
     >>> cost_product, = cost_template.products
     >>> cost_product.save()
