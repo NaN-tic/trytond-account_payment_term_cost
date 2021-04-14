@@ -11,7 +11,9 @@ class Invoice(metaclass=PoolMeta):
 
     def get_move(self):
         pool = Pool()
+        Inv = pool.get('account.invoice')
         Line = pool.get('account.invoice.line')
+
         if self.payment_term and self.payment_term.has_cost:
             lines = Line.search([
                     ('invoice', '=', self),
@@ -22,7 +24,8 @@ class Invoice(metaclass=PoolMeta):
                 line = self._get_payment_term_cost_line()
                 line.save()
                 # Taxes must be recomputed before creating the move
-                self.update_taxes([self])
+                invoice = Inv(self.id)
+                Inv.update_taxes([invoice])
         return super(Invoice, self).get_move()
 
     def _get_payment_term_cost_line(self):
@@ -32,14 +35,12 @@ class Invoice(metaclass=PoolMeta):
         if not self.payment_term or not self.payment_term.has_cost:
             return
 
-        line = Line()
+        default_values = Line.default_get(Line._fields.keys(),
+                with_rec_name=False)
+
+        line = Line(**default_values)
         line.invoice = self
-        for key, value in Line.default_get(Line._fields.keys(),
-                with_rec_name=False).items():
-            setattr(line, key, value)
         line.quantity = 1
-        line.unit = None
-        line.description = None
         line.product = self.payment_term.cost_product
         line.on_change_product()
         if self.payment_term.compute_over_total_amount:
